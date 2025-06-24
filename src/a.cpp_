@@ -1,0 +1,84 @@
+#ifndef _b
+#define _b
+#include "core_defs.h"
+#include "cUtil.h"
+#include "cVec.h"
+#include "cMatrix.h"
+using namespace std;
+
+
+
+
+class tBase
+{
+	public:
+		virtual uint size() const {return 0;}
+		virtual void* data() const {return nullptr;}
+		virtual void print() const {};
+		ostream& operator<<(std::ostream& ostr, const cChecksum& b)
+		{
+			OSTR_SET
+			ostr << b.get() << endl;
+			return ostr;
+		}
+};
+class tByte: public tBase
+{
+	public:
+		tByte(Byte b) {d = b;}
+		uint size() const {return sizeof(d);}
+		void* data() const {return (void*)&d;}
+		void print() const {cout << "size: " << size() << ", data: " << data() << ", data: " << d << endl;}
+	private:
+		Byte d;
+};
+class tInt: public tBase
+{
+	public:
+		tInt(int b) {d = b;}
+		uint size() const {return sizeof(d);}
+		void* data() const {return (void*)&d;}
+		void print() const {cout << "size: " << size() << ", data: " << data() << ", data: " << d << endl;}
+	private:
+		int d;
+};
+
+
+
+
+class cRecord
+{
+	public:
+		cRecord() {clear();}
+		void clear() {data.clear();}
+		void add(tBase &v) {data.push_back(v);}
+		int size() {return data.size();}
+		void print() {for(auto& i:data) {i.print();}}
+	private:
+		vector<tBase> data;
+};
+
+
+
+//http://stackoverflow.com/questions/1471800/getting-rid-of-error-c2243
+int main(void)
+{
+	cout << "testing type classes: " << endl;
+	tByte b(0x22);
+	tInt i(32);
+	tString s("huy");
+	b.print();
+	i.print();
+	s.print();
+
+	cout << "testing cRecord: " << endl;
+	cRecord r;
+	r.add(b);
+	r.add(i);
+	r.add(s);
+	r.print();
+	return 0;
+}
+
+
+#endif
